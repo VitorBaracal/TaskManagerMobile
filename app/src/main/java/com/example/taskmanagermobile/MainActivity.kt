@@ -7,10 +7,12 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import com.example.taskmanagermobile.pages.CreateTask
+import com.example.taskmanagermobile.pages.HomePage
+import com.example.taskmanagermobile.pages.Login
+import com.example.taskmanagermobile.pages.Profile
 import com.example.taskmanagermobile.ui.theme.TaskManagerMobileTheme
 
 class MainActivity : ComponentActivity() {
@@ -20,10 +22,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             TaskManagerMobileTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                    App(modifier = Modifier.padding(innerPadding))
                 }
             }
         }
@@ -31,17 +30,13 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+fun App(modifier: Modifier = Modifier) {
+    val page = "HomePage"
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    TaskManagerMobileTheme {
-        Greeting("Android")
+    when (page) {
+        "Login" -> Login(modifier = modifier)
+        "HomePage" -> HomePage(modifier = modifier)
+        "CreateTask" -> CreateTask(modifier = modifier)
+        "Profile" -> Profile(modifier = modifier)
     }
 }
