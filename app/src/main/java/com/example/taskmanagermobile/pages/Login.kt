@@ -1,28 +1,26 @@
 package com.example.taskmanagermobile.pages
 
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LocalTextStyle
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -32,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -40,197 +39,203 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.taskmanagermobile.ui.theme.TaskManagerMobileTheme
 import com.example.taskmanagermobile.R
+import com.example.taskmanagermobile.ui.theme.BorderGray
+import com.example.taskmanagermobile.ui.theme.BrandPurple
+import com.example.taskmanagermobile.ui.theme.CardBackground
+import com.example.taskmanagermobile.ui.theme.HighContent
+import com.example.taskmanagermobile.ui.theme.MutedText
+import com.example.taskmanagermobile.ui.theme.PageBackground
+import com.example.taskmanagermobile.ui.theme.TaskManagerMobileTheme
+import com.example.taskmanagermobile.ui.theme.TitleText
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Login(modifier: Modifier = Modifier) {
-    val scrollState = rememberScrollState()
-
-
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
 
     val textFieldColors = OutlinedTextFieldDefaults.colors(
-        focusedBorderColor = MaterialTheme.colorScheme.primary,
-        unfocusedBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
+        focusedContainerColor = CardBackground,
+        unfocusedContainerColor = CardBackground,
+        disabledContainerColor = CardBackground,
+        focusedBorderColor = BrandPurple,
+        unfocusedBorderColor = BorderGray,
+        disabledBorderColor = BorderGray,
+        focusedTextColor = TitleText,
+        unfocusedTextColor = TitleText,
+        disabledTextColor = TitleText,
+        focusedLeadingIconColor = MutedText,
+        unfocusedLeadingIconColor = MutedText,
+        disabledLeadingIconColor = MutedText,
+        focusedTrailingIconColor = MutedText,
+        unfocusedTrailingIconColor = MutedText,
+        cursorColor = BrandPurple
     )
 
     Column(
         modifier = modifier
             .fillMaxSize()
-            .safeDrawingPadding()
-            .verticalScroll(scrollState)
-            .padding(horizontal = 24.dp),
+            .background(PageBackground)
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 24.dp, vertical = 12.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Spacer(modifier = Modifier.height(48.dp))
 
-        Spacer(modifier = Modifier.height(64.dp))
-
-        // Logo: rounded purple square with a check drawn using Text
-        Card(
+        Surface(
             modifier = Modifier.size(72.dp),
             shape = RoundedCornerShape(20.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.primary
-            )
+            color = BrandPurple
         ) {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
+            Box(contentAlignment = Alignment.Center) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_doublecheck),
-                    contentDescription = "Double Check Icon Pattern",
-                    modifier = Modifier.size(36.dp),
-                    tint = MaterialTheme.colorScheme.onPrimary
+                    painter = painterResource(R.drawable.ic_check_all),
+                    contentDescription = null,
+                    modifier = Modifier.size(34.dp),
+                    tint = Color.White
                 )
             }
         }
 
-        Spacer(modifier = Modifier.height(20.dp))
-
         Text(
             text = "Task Manager",
-            style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold
+            modifier = Modifier.padding(top = 20.dp),
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold,
+            color = TitleText
         )
-
-        Spacer(modifier = Modifier.height(4.dp))
 
         Text(
-            text = "Your academic routine organized",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+            text = "Sua rotina acadêmica organizada",
+            modifier = Modifier.padding(top = 4.dp),
+            fontSize = 14.sp,
+            color = MutedText
         )
 
-        Spacer(modifier = Modifier.height(40.dp))
+        Spacer(modifier = Modifier.height(36.dp))
 
-        // Email field
         Column(modifier = Modifier.fillMaxWidth()) {
-            Text(
-                text = "Email",
-                style = MaterialTheme.typography.labelLarge,
-                fontWeight = FontWeight.Medium
-            )
-
-            Spacer(modifier = Modifier.height(6.dp))
-
+            FieldLabel(text = "E-mail")
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
-                placeholder = { Text("your.name@email.com") },
+                placeholder = { Text(text = "seu.nome@email.com", color = MutedText) },
                 singleLine = true,
-                shape = RoundedCornerShape(14.dp),
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Email
-                ),
-                colors = textFieldColors,
-                modifier = Modifier.fillMaxWidth(),
                 leadingIcon = {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_email),
-                        contentDescription = "Email Icon"
+                        painter = painterResource(R.drawable.ic_email),
+                        contentDescription = null,
+                        modifier = Modifier.size(20.dp)
                     )
-                }
+                },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                shape = RoundedCornerShape(12.dp),
+                colors = textFieldColors,
+                modifier = Modifier.fillMaxWidth()
             )
         }
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(18.dp))
 
-        // Password field
         Column(modifier = Modifier.fillMaxWidth()) {
-            Text(
-                text = "Password",
-                style = MaterialTheme.typography.labelLarge,
-                fontWeight = FontWeight.Medium
-            )
-
-            Spacer(modifier = Modifier.height(6.dp))
-
+            FieldLabel(text = "Senha")
             OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(14.dp),
                 value = password,
                 onValueChange = { password = it },
-                placeholder = { Text("Enter your password") },
-
-                textStyle = LocalTextStyle.current.copy(
-                    fontWeight = FontWeight.Bold
-                ),
-
+                placeholder = { Text(text = "Digite sua senha", color = MutedText) },
+                singleLine = true,
                 leadingIcon = {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_lock),
-                        contentDescription = "Lock Icon"
+                        painter = painterResource(R.drawable.ic_lock),
+                        contentDescription = null,
+                        modifier = Modifier.size(20.dp)
                     )
                 },
-
                 trailingIcon = {
-                    val iconImage = if (passwordVisible) {
+                    val visibilityIcon = if (passwordVisible) {
                         R.drawable.ic_passwordvisibility
                     } else {
                         R.drawable.ic_passwordnovisibility
                     }
 
                     val description = if (passwordVisible) {
-                        "Hide password"
+                        "Ocultar senha"
                     } else {
-                        "Show password"
+                        "Mostrar senha"
                     }
 
-                    IconButton(
-                        onClick = {
-                            passwordVisible = !passwordVisible
-                        }
-                    ) {
+                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
                         Icon(
-                            painter = painterResource(id = iconImage),
-                            contentDescription = description
+                            painter = painterResource(visibilityIcon),
+                            contentDescription = description,
+                            modifier = Modifier.size(20.dp)
                         )
                     }
                 },
-
-                visualTransformation =
-                    if (passwordVisible) {
-                        VisualTransformation.None
-                    } else {
-                        PasswordVisualTransformation()
-                    },
-
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Password
-                )
+                visualTransformation = if (passwordVisible) {
+                    VisualTransformation.None
+                } else {
+                    PasswordVisualTransformation()
+                },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                shape = RoundedCornerShape(12.dp),
+                colors = textFieldColors,
+                modifier = Modifier.fillMaxWidth()
             )
         }
 
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(28.dp))
 
         Button(
-            onClick = {
-            },
-            enabled = email.isNotEmpty() && password.isNotEmpty(),
-            shape = RoundedCornerShape(16.dp),
+            onClick = { },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(52.dp)
+                .height(52.dp),
+            shape = RoundedCornerShape(12.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = BrandPurple,
+                contentColor = Color.White
+            )
         ) {
-            Text("Sign In")
+            Text(
+                text = "Entrar",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold
+            )
         }
-
-        Spacer(modifier = Modifier.height(12.dp))
 
         TextButton(
-            onClick = {
-            }
+            onClick = { },
+            modifier = Modifier.padding(top = 8.dp)
         ) {
-            Text("Forgot your password?")
+            Text(
+                text = "Esqueceu sua senha?",
+                fontSize = 14.sp,
+                color = BrandPurple
+            )
         }
     }
+}
 
+@Composable
+private fun FieldLabel(text: String, required: Boolean = false) {
+    Row(modifier = Modifier.padding(bottom = 8.dp)) {
+        Text(
+            text = text,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Medium,
+            color = TitleText
+        )
+        if (required) {
+            Text(
+                text = " *",
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Medium,
+                color = HighContent
+            )
+        }
+    }
 }
 
 @Preview(showBackground = true)
