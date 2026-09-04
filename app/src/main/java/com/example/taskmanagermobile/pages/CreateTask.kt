@@ -2,6 +2,7 @@ package com.example.taskmanagermobile.pages
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,13 +19,27 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuAnchorType
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextFieldColors
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -42,23 +57,44 @@ import com.example.taskmanagermobile.ui.theme.MutedText
 import com.example.taskmanagermobile.ui.theme.PageBackground
 import com.example.taskmanagermobile.ui.theme.TaskManagerMobileTheme
 import com.example.taskmanagermobile.ui.theme.TitleText
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
+private val statusOptions = listOf("Pendente", "Em andamento", "Concluída")
+private val priorityOptions = listOf("Alta", "Média", "Baixa")
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateTask(modifier: Modifier = Modifier) {
+    var taskName by remember { mutableStateOf("") }
+    var status by remember { mutableStateOf("Pendente") }
+    var priority by remember { mutableStateOf("Alta") }
+    var endDate by remember { mutableStateOf("20/09/2026") }
+    var showCalendar by remember { mutableStateOf(false) }
+
     val textFieldColors = OutlinedTextFieldDefaults.colors(
         focusedContainerColor = CardBackground,
         unfocusedContainerColor = CardBackground,
         disabledContainerColor = CardBackground,
-        focusedBorderColor = BorderGray,
+        focusedBorderColor = BrandPurple,
         unfocusedBorderColor = BorderGray,
         disabledBorderColor = BorderGray,
-        disabledTextColor = TitleText
+        focusedTextColor = TitleText,
+        unfocusedTextColor = TitleText,
+        disabledTextColor = TitleText,
+        focusedLeadingIconColor = MutedText,
+        unfocusedLeadingIconColor = MutedText,
+        disabledLeadingIconColor = MutedText,
+        focusedTrailingIconColor = MutedText,
+        unfocusedTrailingIconColor = MutedText,
+        cursorColor = BrandPurple
     )
 
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(CardBackground)
+            .background(PageBackground)
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 20.dp, vertical = 12.dp)
     ) {
@@ -68,15 +104,15 @@ fun CreateTask(modifier: Modifier = Modifier) {
 
         FieldLabel(text = "Nome da Tarefa", required = true)
         OutlinedTextField(
-            value = "",
-            onValueChange = { },
-            readOnly = true,
+            value = taskName,
+            onValueChange = { taskName = it },
             placeholder = {
                 Text(
                     text = "Ex: Entregar relatório de física",
                     color = MutedText
                 )
             },
+            singleLine = true,
             shape = RoundedCornerShape(12.dp),
             colors = textFieldColors,
             modifier = Modifier.fillMaxWidth()
@@ -85,62 +121,76 @@ fun CreateTask(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.height(18.dp))
 
         FieldLabel(text = "Status")
-        OutlinedTextField(
-            value = "Pendente",
-            onValueChange = { },
-            readOnly = true,
-            leadingIcon = {
-                Icon(
-                    painter = painterResource(R.drawable.ic_bolt),
-                    contentDescription = null,
-                    modifier = Modifier.size(20.dp),
-                    tint = TitleText
-                )
-            },
-            shape = RoundedCornerShape(12.dp),
+        DropdownField(
+            value = status,
+            options = statusOptions,
+            icon = R.drawable.ic_bolt,
             colors = textFieldColors,
-            modifier = Modifier.fillMaxWidth()
+            onOptionSelected = { status = it }
         )
 
         Spacer(modifier = Modifier.height(18.dp))
 
         FieldLabel(text = "Prioridade")
-        OutlinedTextField(
-            value = "Alta",
-            onValueChange = { },
-            readOnly = true,
-            leadingIcon = {
-                Icon(
-                    painter = painterResource(R.drawable.ic_flag),
-                    contentDescription = null,
-                    modifier = Modifier.size(20.dp),
-                    tint = TitleText
-                )
-            },
-            shape = RoundedCornerShape(12.dp),
+        DropdownField(
+            value = priority,
+            options = priorityOptions,
+            icon = R.drawable.ic_flag,
             colors = textFieldColors,
-            modifier = Modifier.fillMaxWidth()
+            onOptionSelected = { priority = it }
         )
 
         Spacer(modifier = Modifier.height(18.dp))
 
         FieldLabel(text = "Data Fim")
         OutlinedTextField(
-            value = "20/09/2026",
+            value = endDate,
             onValueChange = { },
             readOnly = true,
+            enabled = false,
             leadingIcon = {
                 Icon(
                     painter = painterResource(R.drawable.ic_calendar),
                     contentDescription = null,
-                    modifier = Modifier.size(20.dp),
-                    tint = TitleText
+                    modifier = Modifier.size(20.dp)
                 )
             },
             shape = RoundedCornerShape(12.dp),
             colors = textFieldColors,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { showCalendar = true }
         )
+
+        if (showCalendar) {
+            val datePickerState = rememberDatePickerState()
+
+            DatePickerDialog(
+                onDismissRequest = { showCalendar = false },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            endDate = datePickerState.selectedDateMillis?.let { millis ->
+                                SimpleDateFormat(
+                                    "dd/MM/yyyy",
+                                    Locale.getDefault()
+                                ).format(Date(millis))
+                            } ?: endDate
+                            showCalendar = false
+                        }
+                    ) {
+                        Text(text = "Confirmar")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showCalendar = false }) {
+                        Text(text = "Cancelar")
+                    }
+                }
+            ) {
+                DatePicker(state = datePickerState)
+            }
+        }
 
         Spacer(modifier = Modifier.height(32.dp))
 
@@ -172,7 +222,7 @@ fun CreateTask(modifier: Modifier = Modifier) {
             shape = RoundedCornerShape(12.dp),
             border = BorderStroke(1.dp, BorderGray),
             colors = ButtonDefaults.outlinedButtonColors(
-                containerColor = PageBackground,
+                containerColor = CardBackground,
                 contentColor = TitleText
             )
         ) {
@@ -195,7 +245,8 @@ private fun Header() {
         Surface(
             modifier = Modifier.size(40.dp),
             shape = CircleShape,
-            color = PageBackground
+            color = CardBackground,
+            border = BorderStroke(1.dp, BorderGray)
         ) {
             Box(contentAlignment = Alignment.Center) {
                 Icon(
@@ -232,6 +283,60 @@ private fun FieldLabel(text: String, required: Boolean = false) {
                 fontWeight = FontWeight.Medium,
                 color = HighContent
             )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun DropdownField(
+    value: String,
+    options: List<String>,
+    icon: Int,
+    colors: TextFieldColors,
+    onOptionSelected: (String) -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = !expanded },
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        OutlinedTextField(
+            value = value,
+            onValueChange = { },
+            readOnly = true,
+            leadingIcon = {
+                Icon(
+                    painter = painterResource(icon),
+                    contentDescription = null,
+                    modifier = Modifier.size(20.dp)
+                )
+            },
+            trailingIcon = {
+                ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+            },
+            shape = RoundedCornerShape(12.dp),
+            colors = colors,
+            modifier = Modifier
+                .fillMaxWidth()
+                .menuAnchor(type = ExposedDropdownMenuAnchorType.PrimaryNotEditable)
+        )
+
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            options.forEach { option ->
+                DropdownMenuItem(
+                    text = { Text(text = option) },
+                    onClick = {
+                        onOptionSelected(option)
+                        expanded = false
+                    }
+                )
+            }
         }
     }
 }

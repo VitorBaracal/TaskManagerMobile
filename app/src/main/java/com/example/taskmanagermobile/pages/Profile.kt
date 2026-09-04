@@ -47,7 +47,7 @@ fun Profile(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(CardBackground)
+            .background(PageBackground)
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 20.dp, vertical = 12.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp)
@@ -110,7 +110,8 @@ private fun Header() {
         Surface(
             modifier = Modifier.size(40.dp),
             shape = CircleShape,
-            color = PageBackground
+            color = CardBackground,
+            border = BorderStroke(1.dp, BorderGray)
         ) {
             Box(contentAlignment = Alignment.Center) {
                 Icon(

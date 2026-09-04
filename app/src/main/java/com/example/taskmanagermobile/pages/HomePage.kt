@@ -27,7 +27,10 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -71,7 +74,7 @@ fun HomePage(modifier: Modifier = Modifier) {
             .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
-        Header()
+        AppHeader()
         SearchRow()
         CreateTaskButton()
         ListHeader(pendingTasks = pendingTasks)
@@ -88,7 +91,7 @@ fun HomePage(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun Header() {
+private fun AppHeader() {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
@@ -137,30 +140,44 @@ private fun Header() {
 
 @Composable
 private fun SearchRow() {
+    var search by remember { mutableStateOf("") }
+
+    val textFieldColors = OutlinedTextFieldDefaults.colors(
+        focusedContainerColor = CardBackground,
+        unfocusedContainerColor = CardBackground,
+        disabledContainerColor = CardBackground,
+        focusedBorderColor = BrandPurple,
+        unfocusedBorderColor = BorderGray,
+        disabledBorderColor = BorderGray,
+        focusedTextColor = TitleText,
+        unfocusedTextColor = TitleText,
+        disabledTextColor = TitleText,
+        focusedLeadingIconColor = MutedText,
+        unfocusedLeadingIconColor = MutedText,
+        disabledLeadingIconColor = MutedText,
+        focusedTrailingIconColor = MutedText,
+        unfocusedTrailingIconColor = MutedText,
+        cursorColor = BrandPurple
+    )
+
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         OutlinedTextField(
-            value = "",
-            onValueChange = { },
-            readOnly = true,
+            value = search,
+            onValueChange = { search = it },
             placeholder = { Text(text = "Buscar tarefas...", color = MutedText) },
+            singleLine = true,
             leadingIcon = {
                 Icon(
                     painter = painterResource(R.drawable.ic_search),
                     contentDescription = null,
-                    modifier = Modifier.size(20.dp),
-                    tint = MutedText
+                    modifier = Modifier.size(20.dp)
                 )
             },
             shape = RoundedCornerShape(12.dp),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = CardBackground,
-                unfocusedContainerColor = CardBackground,
-                focusedBorderColor = BorderGray,
-                unfocusedBorderColor = BorderGray
-            ),
+            colors = textFieldColors,
             modifier = Modifier
                 .weight(1f)
                 .height(54.dp)
