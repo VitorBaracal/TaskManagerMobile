@@ -31,7 +31,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun App(modifier: Modifier = Modifier) {
-    val page = "Profile"
+    val page = "CreateTask"
 
     when (page) {
         "Login" -> Login(modifier = modifier)
