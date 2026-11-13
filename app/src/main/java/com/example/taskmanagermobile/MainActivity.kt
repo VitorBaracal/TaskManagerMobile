@@ -7,12 +7,15 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import com.example.taskmanagermobile.pages.CreateTask
-import com.example.taskmanagermobile.pages.HomePage
-import com.example.taskmanagermobile.pages.Login
-import com.example.taskmanagermobile.pages.Profile
+import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import com.example.taskmanagermobile.navigation.AppNavigation
+import com.example.taskmanagermobile.navigation.Login
+import com.example.taskmanagermobile.navigation.Menu
+import com.example.taskmanagermobile.navigation.Register
 import com.example.taskmanagermobile.ui.theme.TaskManagerMobileTheme
 
 class MainActivity : ComponentActivity() {
@@ -21,22 +24,26 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             TaskManagerMobileTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    App(modifier = Modifier.padding(innerPadding))
+                val navController = rememberNavController()
+                val currentEntry by navController.currentBackStackEntryAsState()
+                val destination = currentEntry?.destination
+
+                val showMenu = destination != null &&
+                        !destination.hasRoute<Login>() &&
+                        !destination.hasRoute<Register>()
+
+                Scaffold(
+                    modifier = Modifier.fillMaxSize(),
+                    topBar = {
+                        if (showMenu) Menu(navController = navController)
+                    }
+                ) { innerPadding ->
+                    AppNavigation(
+                        navController = navController,
+                        modifier = Modifier.padding(innerPadding)
+                    )
                 }
             }
         }
-    }
-}
-
-@Composable
-fun App(modifier: Modifier = Modifier) {
-    val page = "Login"
-
-    when (page) {
-        "Login" -> Login(modifier = modifier)
-        "HomePage" -> HomePage(modifier = modifier)
-        "CreateTask" -> CreateTask(modifier = modifier)
-        "Profile" -> Profile(modifier = modifier)
     }
 }
